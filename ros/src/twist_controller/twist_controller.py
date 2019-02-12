@@ -5,7 +5,7 @@ from pid import PID
 from yaw_controller import YawController
 
 GAS_DENSITY = 2.858
-LOGGING_THROTTLE_FACTOR = 5  # Only log after this many seconds
+LOGGING_THROTTLE_FACTOR = 3  # Only log after this many seconds
 MAX_BRAKE = 400.0
 
 
@@ -62,11 +62,13 @@ class Controller(object):
         elif throttle < 0.1 and vel_error < 0:
             throttle = 0.0
             decel = max(vel_error, self.decel_limit)
-            brake = abs(decel) * self.vehicle_mass * self.wheel_radius    # Torque N*m
+            brake = min(MAX_BRAKE, (abs(decel) * self.vehicle_mass * self.wheel_radius))  # Torque N*m
 
         if (current_time - self.log_time) > LOGGING_THROTTLE_FACTOR:
             self.log_time = current_time
-            rospy.logwarn("current_vel={}, linear_vel={}, vel_error={}".format(current_vel, linear_vel,vel_error))
-            rospy.logwarn("throttle={}, brake={}, steering={}".format(throttle, brake, steering))
+            rospy.logwarn("POSE: current_vel={:.2f}, linear_vel={:.2f}, vel_error={:.2f}".format(current_vel,
+                                                                                                 linear_vel,
+                                                                                                 vel_error))
+            rospy.logwarn("POSE: throttle={:.2f}, brake={:.2f}, steering={:.2f}".format(throttle, brake, steering))
 
         return throttle, brake, steering
