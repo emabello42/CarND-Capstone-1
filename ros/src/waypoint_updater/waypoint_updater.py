@@ -23,7 +23,7 @@ as well as to verify your TL classifier.
 TODO (for Yousuf and Aaron): Stopline location for each traffic light.
 '''
 
-LOOKAHEAD_WPS = 50 # Number of waypoints we will publish. 200 are too many, car lost itself in the middle...
+LOOKAHEAD_WPS = 150 # Number of waypoints we will publish. 200 are too many, car lost itself in the middle...
 MAX_DECEL = 0.5
 
 class WaypointUpdater(object):
