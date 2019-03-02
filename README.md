@@ -3,6 +3,7 @@ This is the project repo for the final project of the Udacity Self-Driving Car N
 ---
 ### Team Leader
 
+**Christiane Rother** - christiane.rother@web.de  
 
 ### Team Member
 
