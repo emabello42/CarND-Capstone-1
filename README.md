@@ -14,6 +14,16 @@ This is the project repo for the final project of the Udacity Self-Driving Car N
 
 ---
 
+### Traffic Light Detection
+
+The model used is based on `ssd_mobilenet_v1_coco` from Tensorflow Models. The dataset (TFRecord) was created using the labeled images by [coldKnight](https://github.com/coldKnight) and using [simulation_data.ipynb](https://github.com/pperle/Traffic-Light-Detection-TensorFlow/blob/master/data/simulation_data.ipynb) in order to create some augmented images.
+
+
+More information about the training can be found at [Traffic-Light-Detection-TensorFlow](https://github.com/pperle/Traffic-Light-Detection-TensorFlow).
+
+
+---
+
 Please use **one** of the two installation options, either native **or** docker installation.
 
 ### Native Installation
