@@ -13,7 +13,7 @@ import cv2
 import yaml
 
 STATE_COUNT_THRESHOLD = 3
-IMAGE_CB_THRESHOLD = 5
+IMAGE_CB_THRESHOLD = 2
 
 class TLDetector(object):
     def __init__(self):
@@ -25,6 +25,7 @@ class TLDetector(object):
         self.waypoint_tree = None
         self.camera_image = None
         self.lights = []
+        self.has_image = False
 
         sub1 = rospy.Subscriber('/current_pose', PoseStamped, self.pose_cb)
         sub2 = rospy.Subscriber('/base_waypoints', Lane, self.waypoints_cb)
@@ -74,10 +75,8 @@ class TLDetector(object):
     def image_cb(self, msg):
         """Identifies red lights in the incoming camera image and publishes the index
             of the waypoint closest to the red light's stop line to /traffic_waypoint
-
         Args:
             msg (Image): image from car-mounted camera
-
         """
         if self.image_counter < IMAGE_CB_THRESHOLD:
             self.image_counter += 1
@@ -88,7 +87,7 @@ class TLDetector(object):
         self.has_image = True
         self.camera_image = msg
         light_wp, state = self.process_traffic_lights()
-        #rospy.logwarn("Closest light waypoint= {0}, light state= {1}".format(light_wp, state))
+        rospy.loginfo("Closest light waypoint= {0}, light state= {1}".format(light_wp, state))
 
         '''
         Publish upcoming red lights at camera frequency.
@@ -113,43 +112,35 @@ class TLDetector(object):
             https://en.wikipedia.org/wiki/Closest_pair_of_points_problem
         Args:
             position [x, y]: position to match a waypoint to
-
         Returns:
             int: index of the closest waypoint in self.waypoints
-
         """
         # cKDTree.query() returns (distance, index), but only index is needed
         return self.waypoint_tree.query(position)[1]
 
     def get_light_state(self, light):
         """Determines the current color of the traffic light
-
         Args:
             light (TrafficLight): light to classify
-
         Returns:
             int: ID of traffic light color (specified in styx_msgs/TrafficLight)
-
         """
-        # if(not self.has_image):
-        #     self.prev_light_loc = None
-        #     return False
+        if not self.has_image:
+            # self.prev_light_loc = None
+            # return False
+            return TrafficLight.UNKNOWN
 
-        # cv_image = self.bridge.imgmsg_to_cv2(self.camera_image, "bgr8")
-
-        # #Get classification
-        # return self.light_classifier.get_classification(cv_image)
-
-        return light.state  # TODO implement real classification, this are true values just for testing
+        cv_image = self.bridge.imgmsg_to_cv2(self.camera_image, "bgr8")
+        print('Light State: ', light.state)
+        # Get classification
+        return self.light_classifier.get_classification(cv_image)
 
     def process_traffic_lights(self):
         """Finds closest visible traffic light, if one exists, and determines its
             location and color
-
         Returns:
             int: index of waypoint closes to the upcoming stop line for a traffic light (-1 if none exists)
             int: ID of traffic light color (specified in styx_msgs/TrafficLight)
-
         """
         closest_light = None
         closest_light_waypoint_idx = None
