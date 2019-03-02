@@ -6,10 +6,8 @@ This is the project repo for the final project of the Udacity Self-Driving Car N
 
 ### Team Member
 
-**Frederik Rathmann** - f-rathmann@outlook.de
-
-**Emmanuel Bello** - emabello42@gmail.com
-
+**Frederik Rathmann** - f-rathmann@outlook.de  
+**Emmanuel Bello** - emabello42@gmail.com  
 **Yang Song** - ysong.sc@gmail.com
 
 ---
